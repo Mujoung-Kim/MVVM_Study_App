@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MVVM Study App</string>
+    <string name="password">password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="forget_password">Forget Password?</string>
+    <string name="please_your_email">please your email</string>
+    <string name="logo_text">architect your app with</string>
 </resources>

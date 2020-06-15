@@ -5,8 +5,12 @@ import android.app.Application
 import company.domain.mvvmstudyapp.data.databases.AppDatabases
 import company.domain.mvvmstudyapp.data.network.MyApi
 import company.domain.mvvmstudyapp.data.network.NetworkConnectionInterceptor
+import company.domain.mvvmstudyapp.data.preferences.PreferenceProvider
+import company.domain.mvvmstudyapp.data.repositories.QuotesRepository
 import company.domain.mvvmstudyapp.data.repositories.UserRepository
 import company.domain.mvvmstudyapp.ui.auth.AuthViewModelFactory
+import company.domain.mvvmstudyapp.ui.home.profile.ProfileViewModelFactory
+import company.domain.mvvmstudyapp.ui.home.quotes.QuotesViewModelFactory
 
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -23,8 +27,12 @@ class MVVMApplication : Application(), KodeinAware {
         bind() from singleton { NetworkConnectionInterceptor(instance()) }
         bind() from singleton { MyApi(instance()) }
         bind() from singleton { AppDatabases(instance()) }
+        bind() from singleton { PreferenceProvider(instance()) }
         bind() from singleton { UserRepository(instance(), instance()) }
+        bind() from singleton { QuotesRepository(instance(), instance(), instance()) }
         bind() from provider { AuthViewModelFactory(instance()) }
+        bind() from provider { ProfileViewModelFactory(instance()) }
+        bind() from provider { QuotesViewModelFactory(instance()) }
 
     }
 }
