@@ -2,6 +2,7 @@ package company.domain.mvvmstudyapp.data.network
 
 import company.domain.mvvmstudyapp.data.network.responses.AuthResponse
 import company.domain.mvvmstudyapp.data.network.responses.QuotesResponse
+
 import okhttp3.OkHttpClient
 
 import retrofit2.Response
@@ -14,14 +15,16 @@ import retrofit2.http.POST
 
 interface MyApi {
     @FormUrlEncoded
-    @POST("userlogin")
+//    @POST("userlogin")
+    @POST("login")
     suspend fun userLogin(
         @Field("email") email: String,
         @Field("password") password: String
     ): Response<AuthResponse>
 
     @FormUrlEncoded
-    @POST("createuser")
+//    @POST("createuser")
+    @POST("signup")
     suspend fun userSignup(
         @Field("name") name: String,
         @Field("email") email: String,
@@ -38,8 +41,8 @@ interface MyApi {
 
             return Retrofit.Builder()
                 .client(okkHttpClient)
-                .baseUrl("http://192.168.10.85:8080/")
-//                .baseUrl("https://api.simplifiedcoding.in/course-apis/mvvm/")
+//                .baseUrl("http://192.168.10.85:8080/")
+                .baseUrl("https://api.simplifiedcoding.in/course-apis/mvvm/")
                 .addConverterFactory(GsonConverterFactory.create()).build()
                 .create(MyApi::class.java)
 

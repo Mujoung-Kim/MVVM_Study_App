@@ -23,10 +23,26 @@ class NetworkConnectionInterceptor(context: Context) : Interceptor {
 
     private fun isInternetAvailable(): Boolean {
         val connectivityManager =
-            applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        var result = false
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val netWork = connectivityManager.activeNetwork ?: return false
+            connectivityManager?.let {
+                it.getNetworkCapabilities(connectivityManager.activeNetwork).apply {
+                    result = when {
+                        hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                        hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                        hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                        hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
+                        else -> false
+
+                    }
+                }
+            }
+            return result
+
+            //  the other way
+           /* val netWork = connectivityManager?.activeNetwork ?: return false
             val activityNetwork =
                 connectivityManager.getNetworkCapabilities(netWork) ?: return false
 
@@ -37,9 +53,9 @@ class NetworkConnectionInterceptor(context: Context) : Interceptor {
                 activityNetwork.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
                 else -> false
 
-            }
+            }*/
         } else {
-            connectivityManager.activeNetworkInfo.also {
+            connectivityManager?.activeNetworkInfo.also {
                 return it != null && it.isConnected
 
             }

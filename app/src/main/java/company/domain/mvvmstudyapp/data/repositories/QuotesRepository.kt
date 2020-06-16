@@ -16,13 +16,11 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-private const val MINIMUM_INTERVAL = 9
+private const val MINIMUM_INTERVAL = 6
 
-class QuotesRepository(
-    private val api: MyApi,
-    private val database: AppDatabases,
-    private val prefs: PreferenceProvider
-) : SafeApiRequest() {
+class QuotesRepository(private val api: MyApi, private val database: AppDatabases,
+    private val prefs: PreferenceProvider) : SafeApiRequest() {
+
     private val quotes = MutableLiveData<List<Quote>>()
 
     init {

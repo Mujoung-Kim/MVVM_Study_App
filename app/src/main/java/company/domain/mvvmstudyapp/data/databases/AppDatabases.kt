@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import company.domain.mvvmstudyapp.data.databases.entity.Quote
 
+import company.domain.mvvmstudyapp.data.databases.entity.Quote
 import company.domain.mvvmstudyapp.data.databases.entity.User
 
 @Database(entities = [User::class, Quote::class], version = 1)

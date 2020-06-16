@@ -7,11 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.ViewHolder
 
 import company.domain.mvvmstudyapp.R
 import company.domain.mvvmstudyapp.data.databases.entity.Quote
 import company.domain.mvvmstudyapp.util.Coroutines
-import company.domain.mvvmstudyapp.util.toast
+import company.domain.mvvmstudyapp.util.hide
+import company.domain.mvvmstudyapp.util.show
+
+import kotlinx.android.synthetic.main.quotes_fragment.*
 
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
@@ -40,7 +47,11 @@ class QuotesFragment : Fragment(), KodeinAware {
     }
 
     private fun bindUI() = Coroutines.main {
-        viewModel.quotes.await().observe(this, Observer {
+        progress_bar.show()
+
+        //  change to this -> viewModel.quotes.await().observe(this, Observer { ... })
+        viewModel.quotes.await().observe(viewLifecycleOwner, Observer {
+            progress_bar.hide()
             initRecycleView(it.toQuoteItem())
 
         })
@@ -49,6 +60,16 @@ class QuotesFragment : Fragment(), KodeinAware {
     private fun List<Quote>.toQuoteItem(): List<QuoteItem> = this.map { QuoteItem(it) }
 
     private fun initRecycleView(quoteItem: List<QuoteItem>) {
-        
+        val mAdapter = GroupAdapter<ViewHolder>().apply {
+            addAll(quoteItem)
+
+        }
+
+        recyclerview.apply {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            adapter = mAdapter
+
+        }
     }
 }

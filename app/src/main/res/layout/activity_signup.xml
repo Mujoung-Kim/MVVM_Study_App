@@ -3,14 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="viewModel"
-            type="company.domain.mvvmstudyapp.ui.auth.AuthViewModel" />
-
-    </data>
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,14 +12,14 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp">
+            android:padding="16dp">
 
             <ImageView
                 android:id="@+id/image_view_logo"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="45dp"
                 android:background="@drawable/ic_app_logo" />
 
             <LinearLayout
@@ -67,46 +59,43 @@
                 android:layout_below="@id/linearLayout1"
                 android:background="#ffffff"
                 android:orientation="vertical"
-                android:padding="9dp">
+                android:padding="18dp">
 
                 <EditText
                     android:id="@+id/edit_text_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginBottom="12dp"
                     android:background="@drawable/edit_text_round_gray_background"
                     android:drawableStart="@drawable/ic_name"
                     android:drawablePadding="16dp"
-                    android:text="@={viewModel.name}"
                     android:hint="name"
                     android:inputType="text"
-                    android:padding="6dp" />
+                    android:padding="12dp" />
 
                 <EditText
                     android:id="@+id/edit_text_email"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginBottom="12dp"
                     android:background="@drawable/edit_text_round_gray_background"
                     android:drawableStart="@drawable/ic_email"
                     android:drawablePadding="16dp"
-                    android:text="@={viewModel.email}"
                     android:hint="@string/please_your_email"
                     android:inputType="textEmailAddress"
-                    android:padding="6dp" />
+                    android:padding="12dp" />
 
                 <EditText
                     android:id="@+id/edit_text_password"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginBottom="12dp"
                     android:background="@drawable/edit_text_round_gray_background"
                     android:drawableStart="@drawable/ic_lock"
                     android:drawablePadding="16dp"
-                    android:text="@={viewModel.password}"
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    android:padding="6dp" />
+                    android:padding="12dp" />
 
                 <EditText
                     android:id="@+id/edit_text_password_confirm"
@@ -116,7 +105,6 @@
                     android:background="@drawable/edit_text_round_gray_background"
                     android:drawableStart="@drawable/ic_lock"
                     android:drawablePadding="16dp"
-                    android:text="@={viewModel.passwordConfirm}"
                     android:hint="confirm password"
                     android:inputType="textPassword"
                     android:padding="6dp" />
@@ -125,7 +113,7 @@
                     android:id="@+id/text_view_forget_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginBottom="12dp"
                     android:text="@string/forget_password"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/colorPrimaryDark" />
@@ -135,7 +123,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:onClick="@{viewModel::onSignupButtonClick}"
                     android:text="@string/sign_up"
                     android:textAllCaps="false" />
 
@@ -147,8 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/linearLayout2"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="4dp"
-                android:onClick="@{viewModel::onLogin}"
+                android:layout_marginTop="12dp"
                 android:text="Already have an account?\nSign in Here"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"

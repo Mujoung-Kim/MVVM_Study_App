@@ -1,6 +1,5 @@
 package company.domain.mvvmstudyapp.ui.auth
 
-import androidx.lifecycle.LiveData
 import company.domain.mvvmstudyapp.data.databases.entity.User
 
 interface AuthListener {

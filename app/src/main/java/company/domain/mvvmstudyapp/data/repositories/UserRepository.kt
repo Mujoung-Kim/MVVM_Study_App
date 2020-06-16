@@ -6,8 +6,6 @@ import company.domain.mvvmstudyapp.data.network.MyApi
 import company.domain.mvvmstudyapp.data.network.SafeApiRequest
 import company.domain.mvvmstudyapp.data.network.responses.AuthResponse
 
-import retrofit2.Response
-
 class UserRepository(
     private val api: MyApi,
     private val database: AppDatabases

@@ -6,34 +6,30 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 
 import company.domain.mvvmstudyapp.R
-import company.domain.mvvmstudyapp.data.databases.entity.User
 import company.domain.mvvmstudyapp.databinding.ActivitySignupBinding
 import company.domain.mvvmstudyapp.ui.home.HomeActivity
-import company.domain.mvvmstudyapp.util.hide
-import company.domain.mvvmstudyapp.util.show
-import company.domain.mvvmstudyapp.util.snackbar
+import company.domain.mvvmstudyapp.util.*
 
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.coroutines.launch
 
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 
-class SignupActivity : AppCompatActivity(), AuthListener, KodeinAware {
+class SignupActivity : AppCompatActivity(), KodeinAware {
     override val kodein by kodein()
     private val factory by instance<AuthViewModelFactory>()
+    private lateinit var binding: ActivitySignupBinding
+    private lateinit var viewModel: AuthViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding: ActivitySignupBinding =
-            DataBindingUtil.setContentView(this, R.layout.activity_signup)
-        val viewModel = ViewModelProvider(this, factory)[AuthViewModel::class.java]
-
-        binding.viewModel = viewModel
-        viewModel.authListener = this
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_signup)
+        viewModel = ViewModelProvider(this, factory)[AuthViewModel::class.java]
 
         viewModel.getLoggedInUser().observe(this, Observer { user ->
             if (user != null) {
@@ -44,21 +40,40 @@ class SignupActivity : AppCompatActivity(), AuthListener, KodeinAware {
                 }
             }
         })
+
+        binding.buttonSignUp.setOnClickListener {
+            userSignup()
+
+        }
+
+        binding.textViewLogin.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+
+        }
     }
 
-    override fun onStarted() {
-        progress_bar.show()
+    private fun userSignup() {
+        val name = binding.editTextName.text.toString().trim()
+        val email = binding.editTextEmail.text.toString().trim()
+        val password = binding.editTextPassword.text.toString().trim()
+        val passwordConfirm = binding.editTextPasswordConfirm.text.toString().trim()
 
-    }
+        lifecycleScope.launch {
+            try {
+                val authResponse = viewModel.userSignup(name, email, password)
 
-    override fun onSuccess(user: User) {
-        progress_bar.hide()
+                if (authResponse.user != null)
+                    viewModel.saveLoggedInUser(authResponse.user)
+                else
+                    binding.root.snackbar(authResponse.message!!)
 
-    }
+            } catch (error: ApiException) {
+                error.printStackTrace()
 
-    override fun onFailure(message: String) {
-        progress_bar.hide()
-        root_layout.snackbar(message)
+            } catch (error: NoInternetException) {
+                error.printStackTrace()
 
+            }
+        }
     }
 }

@@ -6,44 +6,35 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 
 import company.domain.mvvmstudyapp.R
-import company.domain.mvvmstudyapp.data.databases.entity.User
 import company.domain.mvvmstudyapp.databinding.ActivityLoginBinding
 import company.domain.mvvmstudyapp.ui.home.HomeActivity
-import company.domain.mvvmstudyapp.util.hide
-import company.domain.mvvmstudyapp.util.show
-import company.domain.mvvmstudyapp.util.snackbar
+import company.domain.mvvmstudyapp.util.*
 
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.launch
 
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 
-class LoginActivity : AppCompatActivity(), AuthListener, KodeinAware {
+class LoginActivity : AppCompatActivity(), KodeinAware {
     override val kodein by kodein()
+
     //  change to this -> private val factory: AuthViewModelFactory by instance()
     private val factory by instance<AuthViewModelFactory>()
+    private lateinit var binding: ActivityLoginBinding
+    private lateinit var viewModel: AuthViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        val networkConnectionInterceptor = NetworkConnectionInterceptor(this)
-//        val api = MyApi(networkConnectionInterceptor)
-//        val databases = AppDatabases(this)
-//        val repository = UserRepository(api, databases)
-//        val factory = AuthViewModelFactory(repository)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
 
-        val binding =
-            DataBindingUtil.setContentView<ActivityLoginBinding>(this, R.layout.activity_login)
-//        val viewModel: AuthViewModel by viewModels()
-        val viewModel = ViewModelProvider(this, factory)[AuthViewModel::class.java]
+        //  val viewModel: AuthViewModel by viewModels()
+        viewModel = ViewModelProvider(this, factory)[AuthViewModel::class.java]
 
-        binding.viewModel = viewModel
-
-        viewModel.authListener = this
         viewModel.getLoggedInUser().observe(this, Observer { user ->
             if (user != null) {
                 Intent(this, HomeActivity::class.java).also {
@@ -53,26 +44,38 @@ class LoginActivity : AppCompatActivity(), AuthListener, KodeinAware {
                 }
             }
         })
+
+        binding.buttonSignIn.setOnClickListener {
+            loginUser()
+
+        }
+
+        binding.textViewSignUp.setOnClickListener {
+            startActivity(Intent(this, SignupActivity::class.java))
+
+        }
     }
 
-    override fun onStarted() {
-        progress_bar.show()
+    private fun loginUser() {
+        val email = binding.editTextEmail.text.toString().trim()
+        val password = binding.editTextPassword.text.toString().trim()
 
-    }
+        lifecycleScope.launch {
+            try {
+                val authResponse = viewModel.userLogin(email, password)
 
-    override fun onSuccess(user: User) {
-        progress_bar.hide()
-//        root_layout.snackbar("${user.name} is Logged In")
-        /*loginResponse.observe(this, Observer {
-            progress_bar.hide()
-            toast(it)
+                if (authResponse.user != null)
+                    viewModel.saveLoggedInUser(authResponse.user)
+                else
+                    binding.rootLayout.snackbar(authResponse.message!!)
 
-        })*/
-    }
+            } catch (error: ApiException) {
+                error.printStackTrace()
 
-    override fun onFailure(message: String) {
-        progress_bar.hide()
-        root_layout.snackbar(message)
+            } catch (error: NoInternetException) {
+                error.printStackTrace()
 
+            }
+        }
     }
 }
